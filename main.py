@@ -7,13 +7,17 @@ from __future__ import print_function
 import pygame, sys
 from pygame.locals import *
 import time
+import random
 
 class Game(object):
 
-    def __init__(self):
+    def __init__(self, level=None):
 
         self.display = pygame.display.set_mode((320, 420))
         pygame.display.set_caption('Lights poof!')
+
+        self.on_image = pygame.image.load('light-on.png')
+        self.off_image = pygame.image.load('light-off.png')
 
         self.game_size = 4
         self.light_size = 42
@@ -25,11 +29,30 @@ class Game(object):
         self.board_x = (self.display.get_width() - self.board_size) / 2
         self.board_y = (self.display.get_height() - self.board_size) / 2
 
-        self.board = [[False] * self.game_size
-                            for _ in range(self.game_size)]
+        self.board = [[False] * self.game_size for _ in range(self.game_size)]
+        self.apply_level(level)
 
-        self.on_image = pygame.image.load('light-on.png')
-        self.off_image = pygame.image.load('light-off.png')
+    def apply_level(self, level):
+
+        # How many turns should the game be of?
+        min_turns = self.game_size
+        max_turns = self.game_size * 2
+        turns = random.randint(min_turns, max_turns)
+
+        # Create a list of all possible coordinates and select `turns` of them
+        # in random.
+        all_coordinates = [(i, j) for i in range(self.game_size)
+                for j in range(self.game_size)]
+        random.shuffle(all_coordinates)
+
+        # They are also the solution of this game.
+        solution_coordinates = all_coordinates[:turns]
+
+        # Toggle each of the selected coordinate.
+        for i, j in solution_coordinates:
+            self.toggle(i, j)
+
+        return [[False] * self.game_size for _ in range(self.game_size)]
 
     def draw(self):
         # Draw background.
@@ -66,27 +89,7 @@ class Game(object):
         if light_pos is None:
             return
 
-        # List of coordinates of lights to be toggled.
-        toggle_positions = [light_pos]
-
-        light_i, light_j = light_pos
-        game_size = self.game_size
-
-        if light_j < game_size - 1:
-            toggle_positions.append((light_i, light_j + 1))
-
-        if light_j > 0:
-            toggle_positions.append((light_i, light_j - 1))
-
-        if light_i < game_size - 1:
-            toggle_positions.append((light_i + 1, light_j))
-
-        if light_i > 0:
-            toggle_positions.append((light_i - 1, light_j))
-
-        # Toggle the light at this location.
-        for i, j in toggle_positions:
-            self.board[i][j] = not self.board[i][j]
+        self.toggle(*light_pos)
 
     def get_light_under_point(self, point):
         point_x, point_y = point
@@ -110,6 +113,28 @@ class Game(object):
             return i, j
         else:
             return None
+
+    def toggle(self, light_i, light_j):
+        # List of coordinates of lights to be toggled.
+        toggle_positions = [(light_i, light_j)]
+
+        game_size = self.game_size
+
+        if light_j < game_size - 1:
+            toggle_positions.append((light_i, light_j + 1))
+
+        if light_j > 0:
+            toggle_positions.append((light_i, light_j - 1))
+
+        if light_i < game_size - 1:
+            toggle_positions.append((light_i + 1, light_j))
+
+        if light_i > 0:
+            toggle_positions.append((light_i - 1, light_j))
+
+        # Toggle the light at this location.
+        for i, j in toggle_positions:
+            self.board[i][j] = not self.board[i][j]
 
 
 pygame.init()
