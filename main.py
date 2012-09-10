@@ -39,20 +39,12 @@ class Game(object):
         self.board = [[False] * self.game_size for _ in range(self.game_size)]
         self.apply_level(level)
 
-        self.buttons = [
-            Button('New game', 'light-off.png'),
-            Button('New game', 'light-off.png'),
-            Button('New game', 'light-off.png'),
-        ]
+        self.btn_active_image = pygame.image.load('button-active.png')
+        self.btn_inactive_image = pygame.image.load('button-inactive.png')
 
-        self.button_size = 42
-        self.button_gap = 12
-
-        button_bar_width = len(self.buttons) * \
-                (self.button_size + self.button_gap) - self.button_gap
-
-        self.button_bar_x = (self.display.get_width() - button_bar_width) / 2
-        self.button_bar_y = self.board_y + self.board_size + 24
+        self.menu_btn_x = (self.display.get_width() -
+                self.btn_active_image.get_width()) / 2
+        self.menu_btn_y = self.board_y + self.board_size + 24
 
     def apply_level(self, level):
 
@@ -98,10 +90,8 @@ class Game(object):
             y += self.light_size + self.light_gap
 
         # Draw the buttons.
-        x = self.button_bar_x
-        for button in self.buttons:
-            self.display.blit(button.image, (x, self.button_bar_y))
-            x += self.button_size + self.button_gap
+        self.display.blit(self.btn_inactive_image,
+                (self.menu_btn_x, self.menu_btn_y))
 
         pygame.display.update()
 
@@ -164,25 +154,6 @@ class Game(object):
         # Toggle the light at this location.
         for i, j in toggle_positions:
             self.board[i][j] = not self.board[i][j]
-
-
-class Button(object):
-
-    def __init__(self, label, image_source):
-        self.label = label
-        self.image = pygame.image.load(image_source)
-
-        self.x = self.y = None
-
-        self.click_handler = None
-
-    def on_click(self, fn):
-        """A decorator to add a click handler on this button."""
-        self.click_handler = fn
-
-    def click(self, event):
-        if self.click_handler is not None:
-            self.click_handler(event)
 
 
 pygame.init()
