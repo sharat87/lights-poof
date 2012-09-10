@@ -153,4 +153,4 @@ while True:
 
     game.draw()
 
-    time.sleep(.1)
+    time.sleep(.01)
