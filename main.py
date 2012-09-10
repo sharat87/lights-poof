@@ -19,7 +19,14 @@ class Game(object):
         self.on_image = pygame.image.load('light-on.png')
         self.off_image = pygame.image.load('light-off.png')
 
-        self.game_size = 4
+        title_font = pygame.font.Font('Signika-Regular.ttf', 36)
+        self.title_surface = title_font.render('Lights poof!', True,
+                (213, 85, 148))
+        self.title_rect = self.title_surface.get_rect()
+        self.title_rect.centerx = self.display.get_width() / 2
+        self.title_rect.top = 24
+
+        self.game_size = 5
         self.light_size = 42
         self.light_gap = 6
 
@@ -57,6 +64,9 @@ class Game(object):
     def draw(self):
         # Draw background.
         self.display.fill((40, 40, 40))
+
+        # Draw the title.
+        self.display.blit(self.title_surface, self.title_rect)
 
         # Draw the lights.
         y = self.board_y
