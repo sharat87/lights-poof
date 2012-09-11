@@ -22,6 +22,8 @@ class App(object):
         self.game = Game(self.display)
         self.game.on_menu_click = self.on_menu_click
 
+        self.menu = Menu(self.display)
+
         self.current_state = self.game
 
     def main_loop(self):
@@ -38,8 +40,11 @@ class App(object):
         # Draw background.
         self.display.blit(self.bg_surface, (0, 0))
 
-        # Draw the state
+        # Draw the state.
         self.current_state.draw()
+
+        # Update the display.
+        pygame.display.update()
 
     def handle(self, event):
 
@@ -68,7 +73,7 @@ class App(object):
             x += image_width
 
     def on_menu_click(self, event):
-        print('Menu button clicked')
+        self.current_state = self.menu
 
 
 class Game(object):
@@ -150,8 +155,6 @@ class Game(object):
         # Draw the buttons.
         self.menu_btn.draw(self.display)
 
-        pygame.display.update()
-
     def handle(self, event):
 
         # Pass to any components that might need it.
@@ -218,6 +221,26 @@ class Game(object):
     def _on_menu_click(self, event):
         if self.on_menu_click is not None:
             self.on_menu_click(event)
+
+
+class Menu(object):
+
+    def __init__(self, display):
+        self.display = display
+
+        title_font = pygame.font.Font('Signika-Regular.ttf', 48)
+        self.title_surface = title_font.render('Lights poof!', True,
+                (213, 85, 148))
+        self.title_rect = self.title_surface.get_rect()
+        self.title_rect.centerx = self.display.get_width() / 2
+        self.title_rect.top = 24
+
+    def draw(self):
+        # Draw the title.
+        self.display.blit(self.title_surface, self.title_rect)
+
+    def handle(self, event):
+        pass
 
 
 class Button(object):
