@@ -12,6 +12,7 @@ import random
 class App(object):
 
     def __init__(self):
+        pygame.init()
 
         self.display = pygame.display.set_mode((320, 420))
         pygame.display.set_caption('Lights poof!')
@@ -247,7 +248,6 @@ class Button(object):
         return self.rect.collidepoint(point)
 
 
-pygame.init()
 app = App()
 
 while True:
