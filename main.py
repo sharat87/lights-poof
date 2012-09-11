@@ -18,6 +18,7 @@ class App(object):
         pygame.display.set_caption('Lights poof!')
 
         self.game = Game(self.display)
+        self.game.on_menu_click = self.on_menu_click
 
         self.current_state = self.game
 
@@ -39,6 +40,9 @@ class App(object):
 
         else:
             self.current_state.handle(event)
+
+    def on_menu_click(self, event):
+        print('Menu button clicked')
 
 
 class Game(object):
@@ -74,7 +78,10 @@ class Game(object):
 
         self.menu_btn = Button('Menu', centerx=self.display.get_width() / 2,
                 y=self.board_y + self.board_size + 24)
-        self.menu_btn.on_click = self.on_menu_click
+
+        # Menu button click handler should be set from outside this class.
+        self.menu_btn.on_click = self._on_menu_click
+        self.on_menu_click = None
 
     def init_bg_surface(self):
         bg_image = pygame.image.load('bg.png')
@@ -204,8 +211,9 @@ class Game(object):
         for i, j in toggle_positions:
             self.board[i][j] = not self.board[i][j]
 
-    def on_menu_click(self, event):
-        print('Menu button clicked')
+    def _on_menu_click(self, event):
+        if self.on_menu_click is not None:
+            self.on_menu_click(event)
 
 
 class Button(object):
