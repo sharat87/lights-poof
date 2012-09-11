@@ -20,9 +20,9 @@ class App(object):
 
         self.init_bg_surface()
 
-        self.init_new_game()
+        self.solver = Solver(self.display)
 
-        self.solver = Solver(self.display, self.game)
+        self.init_new_game()
 
         self.menu = Menu(self.display)
         self.menu.on_resume_click = self.on_resume_click
@@ -80,6 +80,8 @@ class App(object):
     def init_new_game(self):
         self.game = Game(self.display)
         self.game.on_menu_click = self.on_menu_click
+
+        self.solver.game = self.game
 
     def on_menu_click(self, event):
         self.current_state = self.menu
@@ -256,9 +258,8 @@ class Game(object):
 
 class Solver(object):
 
-    def __init__(self, display, game=None):
+    def __init__(self, display):
         self.display = display
-        self.game = game
 
     def draw(self):
         self.game.draw()
