@@ -4,10 +4,11 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
-import pygame, sys
-from pygame.locals import *
+import sys
 import time
 import random
+import pygame
+from pygame.locals import QUIT, KEYUP, MOUSEBUTTONUP, MOUSEBUTTONDOWN
 
 class App(object):
 
@@ -20,6 +21,8 @@ class App(object):
         self.init_bg_surface()
 
         self.init_new_game()
+
+        self.solver = Solver(self.display, self.game)
 
         self.menu = Menu(self.display)
         self.menu.on_resume_click = self.on_resume_click
@@ -89,7 +92,8 @@ class App(object):
         self.current_state = self.game
 
     def on_solve_click(self, event):
-        print('Lets try solve this thing')
+        self.current_state = self.solver
+        print(self.solver.game.solution)
 
 
 class Game(object):
@@ -142,13 +146,11 @@ class Game(object):
         random.shuffle(all_coordinates)
 
         # They are also the solution of this game.
-        solution_coordinates = all_coordinates[:turns]
+        self.solution = all_coordinates[:turns]
 
         # Toggle each of the selected coordinate.
-        for i, j in solution_coordinates:
+        for i, j in self.solution:
             self.toggle(i, j)
-
-        return [[False] * self.game_size for _ in range(self.game_size)]
 
     def draw(self):
         # Draw the title.
@@ -237,6 +239,19 @@ class Game(object):
     def _on_menu_click(self, event):
         if self.on_menu_click is not None:
             self.on_menu_click(event)
+
+
+class Solver(object):
+
+    def __init__(self, display, game=None):
+        self.display = display
+        self.game = game
+
+    def draw(self):
+        self.game.draw()
+
+    def handle(self, event):
+        self.game.handle(event)
 
 
 class Menu(object):
