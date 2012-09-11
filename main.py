@@ -235,9 +235,22 @@ class Menu(object):
         self.title_rect.centerx = self.display.get_width() / 2
         self.title_rect.top = 18
 
+        self.button_gap = 12
+        self.buttons = []
+
+        y = self.title_rect.top + self.title_rect.height + 24
+
+        resume_btn = Button('Resume', centerx=self.display.get_width() / 2)
+        self.buttons.append(resume_btn)
+
+        resume_btn.update_rect(y=y)
+
     def draw(self):
         # Draw the title.
         self.display.blit(self.title_surface, self.title_rect)
+
+        for button in self.buttons:
+            button.draw(self.display)
 
     def handle(self, event):
         pass
@@ -263,10 +276,14 @@ class Button(object):
                 (240, 240, 240))
 
         self.rect = pygame.Rect((0, 0), Button.active_image.get_size())
-        for rect_arg, value in kwargs.items():
-            setattr(self.rect, rect_arg, value)
-
         self.label_rect = self.label_surface.get_rect()
+
+        self.update_rect(**kwargs)
+
+    def update_rect(self, **kwargs):
+        for name, value in kwargs.items():
+            setattr(self.rect, name, value)
+
         self.label_rect.center = self.rect.center
 
     def draw(self, surface):
