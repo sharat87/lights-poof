@@ -162,22 +162,31 @@ class Button(object):
     def __init__(self, label, **kwargs):
 
         if Button.active_image is None:
+            Button.label_font = pygame.font.Font('Signika-Regular.ttf', 24)
             Button.active_image = pygame.image.load('button-active.png')
             Button.inactive_image = pygame.image.load('button-inactive.png')
 
         self.is_mousedown = False
+
         self.label = label
+        self.label_surface = Button.label_font.render(self.label, True,
+                (240, 240, 240))
 
         self.rect = pygame.Rect((0, 0), Button.active_image.get_size())
         for rect_arg, value in kwargs.items():
             setattr(self.rect, rect_arg, value)
 
+        self.label_rect = self.label_surface.get_rect()
+        self.label_rect.center = self.rect.center
+
     def draw(self, surface):
 
         if self.is_mousedown:
-            surface.blit(Button.active_image, self)
+            surface.blit(Button.active_image, self.rect)
         else:
-            surface.blit(Button.inactive_image, self)
+            surface.blit(Button.inactive_image, self.rect)
+
+        surface.blit(self.label_surface, self.label_rect)
 
     def handle(self, event):
         if event.type == MOUSEBUTTONDOWN and self.contains(event.pos):
