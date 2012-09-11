@@ -41,6 +41,7 @@ class Game(object):
 
         self.menu_btn = Button('Menu', centerx=self.display.get_width() / 2,
                 y=self.board_y + self.board_size + 24)
+        self.menu_btn.on_click = self.on_menu_click
 
     def apply_level(self, level):
 
@@ -153,6 +154,9 @@ class Game(object):
         for i, j in toggle_positions:
             self.board[i][j] = not self.board[i][j]
 
+    def on_menu_click(self, event):
+        print('Menu button clicked')
+
 
 class Button(object):
 
@@ -167,6 +171,7 @@ class Button(object):
             Button.inactive_image = pygame.image.load('button-inactive.png')
 
         self.is_mousedown = False
+        self.on_click = None
 
         self.label = label
         self.label_surface = Button.label_font.render(self.label, True,
@@ -189,13 +194,16 @@ class Button(object):
         surface.blit(self.label_surface, self.label_rect)
 
     def handle(self, event):
+        if self.on_click is None:
+            return
+
         if event.type == MOUSEBUTTONDOWN and self.contains(event.pos):
             self.is_mousedown = True
 
         elif event.type == MOUSEBUTTONUP:
 
             if self.is_mousedown and self.contains(event.pos):
-                print('Show menu')
+                self.on_click(event)
 
             self.is_mousedown = False
 
