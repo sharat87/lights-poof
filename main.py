@@ -241,10 +241,10 @@ class Menu(object):
 
         self.buttons = []
 
-        self.resume_btn = Button('Resume', centerx=self.display.get_width() / 2)
-        self.resume_btn.on_click = (lambda event:
+        resume_btn = Button('Resume', centerx=self.display.get_width() / 2)
+        resume_btn.on_click = (lambda event:
                 self.on_resume_click and self.on_resume_click(event))
-        self.buttons.append(self.resume_btn)
+        self.buttons.append(resume_btn)
 
         y = self.title_rect.top + self.title_rect.height + 24
         button_gap = 12
