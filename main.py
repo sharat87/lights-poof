@@ -39,12 +39,8 @@ class Game(object):
         self.board = [[False] * self.game_size for _ in range(self.game_size)]
         self.apply_level(level)
 
-        self.btn_active_image = pygame.image.load('button-active.png')
-        self.btn_inactive_image = pygame.image.load('button-inactive.png')
-
-        self.menu_btn_x = (self.display.get_width() -
-                self.btn_active_image.get_width()) / 2
-        self.menu_btn_y = self.board_y + self.board_size + 24
+        self.menu_btn = Button('Menu', centerx=self.display.get_width() / 2,
+                y=self.board_y + self.board_size + 24)
 
     def apply_level(self, level):
 
@@ -90,12 +86,14 @@ class Game(object):
             y += self.light_size + self.light_gap
 
         # Draw the buttons.
-        self.display.blit(self.btn_inactive_image,
-                (self.menu_btn_x, self.menu_btn_y))
+        self.menu_btn.draw(self.display)
 
         pygame.display.update()
 
     def handle(self, event):
+
+        # Pass to any components that might need it.
+        self.menu_btn.handle(event)
 
         # Left click.
         if event.type == MOUSEBUTTONUP and event.button == 1:
@@ -154,6 +152,46 @@ class Game(object):
         # Toggle the light at this location.
         for i, j in toggle_positions:
             self.board[i][j] = not self.board[i][j]
+
+
+class Button(object):
+
+    active_image = None
+    inactive_image = None
+
+    def __init__(self, label, **kwargs):
+
+        if Button.active_image is None:
+            Button.active_image = pygame.image.load('button-active.png')
+            Button.inactive_image = pygame.image.load('button-inactive.png')
+
+        self.is_mousedown = False
+        self.label = label
+
+        self.rect = pygame.Rect((0, 0), Button.active_image.get_size())
+        for rect_arg, value in kwargs.items():
+            setattr(self.rect, rect_arg, value)
+
+    def draw(self, surface):
+
+        if self.is_mousedown:
+            surface.blit(Button.active_image, self)
+        else:
+            surface.blit(Button.inactive_image, self)
+
+    def handle(self, event):
+        if event.type == MOUSEBUTTONDOWN and self.contains(event.pos):
+            self.is_mousedown = True
+
+        elif event.type == MOUSEBUTTONUP:
+
+            if self.is_mousedown and self.contains(event.pos):
+                print('Show menu')
+
+            self.is_mousedown = False
+
+    def contains(self, point):
+        return self.rect.collidepoint(point)
 
 
 pygame.init()
