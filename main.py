@@ -21,6 +21,7 @@ class App(object):
         self.init_bg_surface()
 
         self.solver = Solver(self.display)
+        self.solver.on_solver_done = self.on_solver_done
 
         self.init_new_game()
 
@@ -97,15 +98,16 @@ class App(object):
         self.current_state = self.solver
         print(self.solver.game.solution)
 
+    def on_solver_done(self):
+        print('Solving complete')
+        self.current_state = self.game
+
 
 class Game(object):
 
     def __init__(self, display, level=None):
 
         self.display = display
-
-        self.on_image = pygame.image.load('light-on.png')
-        self.off_image = pygame.image.load('light-off.png')
 
         title_font = pygame.font.Font('Signika-Regular.ttf', 36)
         self.title_surface = title_font.render('Lights poof!', True,
@@ -260,8 +262,31 @@ class Solver(object):
 
     def __init__(self, display):
         self.display = display
+        self.spotlight = None
+        self.spotlight_pos = 0, 0
+
+        self._on_solver_done = (lambda: self.on_solver_done and
+                self.on_solver_done())
+        self.on_solver_done = None
 
     def draw(self):
+
+        if not self.spotlight or time.time() - self.last_spot_time > 1:
+            self.last_spot_time = time.time()
+
+            if self.spotlight:
+                self.spotlight.in_spotlight = False
+                self.game.toggle(*self.spotlight_pos)
+
+            if self.game.solution:
+                i, j = self.spotlight_pos = self.game.solution.pop()
+
+                self.spotlight = self.game.board[i][j]
+                self.spotlight.in_spotlight = True
+
+            else:
+                self._on_solver_done()
+
         self.game.draw()
 
     def handle(self, event):
@@ -283,13 +308,25 @@ class Light(object):
 
         self.rect = pygame.Rect((0, 0), Light.on_image.get_size())
 
+        # Whether to highlight this light. Used by solver.
+        self.in_spotlight = False
+        self.spotlight_rect = self.rect.copy()
+        self.spotlight_rect.width = self.rect.width / 2
+        self.spotlight_rect.height = self.rect.height / 2
+
     def update_rect(self, **kwargs):
         for name, value in kwargs.items():
             setattr(self.rect, name, value)
 
+        self.spotlight_rect.center = self.rect.center
+
     def draw(self):
         self.display.blit(Light.on_image if self.value else Light.off_image,
                 self.rect)
+
+        if self.in_spotlight:
+            pygame.draw.ellipse(self.display, (255, 0, 0), self.spotlight_rect,
+                    0)
 
     def toggle(self):
         self.value = not self.value
