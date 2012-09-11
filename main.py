@@ -166,7 +166,7 @@ class Button(object):
     def __init__(self, label, **kwargs):
 
         if Button.active_image is None:
-            Button.label_font = pygame.font.Font('Signika-Regular.ttf', 24)
+            Button.label_font = pygame.font.Font('Signika-Light.ttf', 24)
             Button.active_image = pygame.image.load('button-active.png')
             Button.inactive_image = pygame.image.load('button-inactive.png')
 
