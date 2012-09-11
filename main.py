@@ -21,11 +21,25 @@ class App(object):
 
         self.current_state = self.game
 
-    def draw(self):
-        self.current_state.draw()
+    def main_loop(self):
+
+        while True:
+
+            for event in pygame.event.get():
+                self.handle(event)
+
+            self.current_state.draw()
+            time.sleep(.01)
 
     def handle(self, event):
-        self.current_state.handle(event)
+
+        if event.type == QUIT or (event.type == KEYUP and event.key == 27):
+            pygame.quit()
+            sys.exit()
+
+        else:
+            self.current_state.handle(event)
+
 
 
 class Game(object):
@@ -249,18 +263,4 @@ class Button(object):
 
 
 app = App()
-
-while True:
-
-    for event in pygame.event.get():
-
-        if event.type == QUIT or (event.type == KEYUP and event.key == 27):
-            pygame.quit()
-            sys.exit()
-
-        else:
-            app.handle(event)
-
-    app.draw()
-
-    time.sleep(.01)
+app.main_loop()
