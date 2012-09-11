@@ -17,6 +17,8 @@ class App(object):
         self.display = pygame.display.set_mode((320, 420))
         pygame.display.set_caption('Lights poof!')
 
+        self.init_bg_surface()
+
         self.game = Game(self.display)
         self.game.on_menu_click = self.on_menu_click
 
@@ -29,8 +31,15 @@ class App(object):
             for event in pygame.event.get():
                 self.handle(event)
 
-            self.current_state.draw()
+            self.draw()
             time.sleep(.01)
+
+    def draw(self):
+        # Draw background.
+        self.display.blit(self.bg_surface, (0, 0))
+
+        # Draw the state
+        self.current_state.draw()
 
     def handle(self, event):
 
@@ -40,6 +49,23 @@ class App(object):
 
         else:
             self.current_state.handle(event)
+
+    def init_bg_surface(self):
+        bg_image = pygame.image.load('bg.png')
+        self.bg_surface = pygame.Surface(self.display.get_size())
+
+        x = y = 0
+        image_width, image_height = bg_image.get_size()
+        bg_width, bg_height = self.display.get_size()
+
+        while x < bg_width:
+            y = 0
+
+            while y < bg_height:
+                self.bg_surface.blit(bg_image, (x, y))
+                y += image_height
+
+            x += image_width
 
     def on_menu_click(self, event):
         print('Menu button clicked')
@@ -53,8 +79,6 @@ class Game(object):
 
         self.on_image = pygame.image.load('light-on.png')
         self.off_image = pygame.image.load('light-off.png')
-
-        self.init_bg_surface()
 
         title_font = pygame.font.Font('Signika-Regular.ttf', 36)
         self.title_surface = title_font.render('Lights poof!', True,
@@ -83,23 +107,6 @@ class Game(object):
         self.menu_btn.on_click = self._on_menu_click
         self.on_menu_click = None
 
-    def init_bg_surface(self):
-        bg_image = pygame.image.load('bg.png')
-        self.bg_surface = pygame.Surface(self.display.get_size())
-
-        x = y = 0
-        image_width, image_height = bg_image.get_size()
-        bg_width, bg_height = self.display.get_size()
-
-        while x < bg_width:
-            y = 0
-
-            while y < bg_height:
-                self.bg_surface.blit(bg_image, (x, y))
-                y += image_height
-
-            x += image_width
-
     def apply_level(self, level):
 
         # How many turns should the game be of?
@@ -123,9 +130,6 @@ class Game(object):
         return [[False] * self.game_size for _ in range(self.game_size)]
 
     def draw(self):
-        # Draw background.
-        self.display.blit(self.bg_surface, (0, 0))
-
         # Draw the title.
         self.display.blit(self.title_surface, self.title_rect)
 
