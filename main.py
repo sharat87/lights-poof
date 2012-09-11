@@ -23,6 +23,7 @@ class App(object):
         self.game.on_menu_click = self.on_menu_click
 
         self.menu = Menu(self.display)
+        self.menu.on_resume_click = self.on_resume_click
 
         self.current_state = self.game
 
@@ -74,6 +75,9 @@ class App(object):
 
     def on_menu_click(self, event):
         self.current_state = self.menu
+
+    def on_resume_click(self, event):
+        self.current_state = self.game
 
 
 class Game(object):
@@ -240,10 +244,12 @@ class Menu(object):
 
         y = self.title_rect.top + self.title_rect.height + 24
 
-        resume_btn = Button('Resume', centerx=self.display.get_width() / 2)
-        self.buttons.append(resume_btn)
+        self.resume_btn = Button('Resume', centerx=self.display.get_width() / 2)
+        self.resume_btn.on_click = (lambda event:
+                self.on_resume_click and self.on_resume_click(event))
+        self.buttons.append(self.resume_btn)
 
-        resume_btn.update_rect(y=y)
+        self.resume_btn.update_rect(y=y)
 
     def draw(self):
         # Draw the title.
@@ -253,7 +259,8 @@ class Menu(object):
             button.draw(self.display)
 
     def handle(self, event):
-        pass
+        for button in self.buttons:
+            button.handle(event)
 
 
 class Button(object):
