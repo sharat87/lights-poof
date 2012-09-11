@@ -189,7 +189,15 @@ class Game(object):
 
         # No light under the click. Do nothing.
         if light_pos is not None:
+
+            # Toggle this light and all the lights that go with it.
             self.toggle(*light_pos)
+
+            # Add/remove it to/from the solution.
+            try:
+                self.solution.remove(light_pos)
+            except ValueError:
+                self.solution.append(light_pos)
 
     def get_light_under_point(self, point):
         point_x, point_y = point
