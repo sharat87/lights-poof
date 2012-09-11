@@ -331,28 +331,23 @@ class Light(object):
         if Light.on_image is None:
             Light.on_image = pygame.image.load('light-on.png')
             Light.off_image = pygame.image.load('light-off.png')
+            Light.spotlight_image = pygame.image.load('light-spotlight.png')
 
         self.rect = pygame.Rect((0, 0), Light.on_image.get_size())
 
         # Whether to highlight this light. Used by solver.
         self.in_spotlight = False
-        self.spotlight_rect = self.rect.copy()
-        self.spotlight_rect.width = self.rect.width / 2
-        self.spotlight_rect.height = self.rect.height / 2
 
     def update_rect(self, **kwargs):
         for name, value in kwargs.items():
             setattr(self.rect, name, value)
-
-        self.spotlight_rect.center = self.rect.center
 
     def draw(self):
         self.display.blit(Light.on_image if self.value else Light.off_image,
                 self.rect)
 
         if self.in_spotlight:
-            pygame.draw.ellipse(self.display, (255, 0, 0), self.spotlight_rect,
-                    0)
+            self.display.blit(Light.spotlight_image, self.rect)
 
     def toggle(self):
         self.value = not self.value
