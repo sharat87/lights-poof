@@ -233,7 +233,7 @@ class Menu(object):
                 (213, 85, 148))
         self.title_rect = self.title_surface.get_rect()
         self.title_rect.centerx = self.display.get_width() / 2
-        self.title_rect.top = 24
+        self.title_rect.top = 18
 
     def draw(self):
         # Draw the title.
