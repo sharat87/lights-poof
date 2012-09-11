@@ -9,12 +9,29 @@ from pygame.locals import *
 import time
 import random
 
-class Game(object):
+class App(object):
 
-    def __init__(self, level=None):
+    def __init__(self):
 
         self.display = pygame.display.set_mode((320, 420))
         pygame.display.set_caption('Lights poof!')
+
+        self.game = Game(self.display)
+
+        self.current_state = self.game
+
+    def draw(self):
+        self.current_state.draw()
+
+    def handle(self, event):
+        self.current_state.handle(event)
+
+
+class Game(object):
+
+    def __init__(self, display, level=None):
+
+        self.display = display
 
         self.on_image = pygame.image.load('light-on.png')
         self.off_image = pygame.image.load('light-off.png')
@@ -231,7 +248,7 @@ class Button(object):
 
 
 pygame.init()
-game = Game()
+app = App()
 
 while True:
 
@@ -242,8 +259,8 @@ while True:
             sys.exit()
 
         else:
-            game.handle(event)
+            app.handle(event)
 
-    game.draw()
+    app.draw()
 
     time.sleep(.01)
