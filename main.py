@@ -24,6 +24,7 @@ class App(object):
         self.menu = Menu(self.display)
         self.menu.on_resume_click = self.on_resume_click
         self.menu.on_new_click = self.on_new_click
+        self.menu.on_solve_click = self.on_solve_click
 
         self.current_state = self.game
 
@@ -86,6 +87,9 @@ class App(object):
     def on_new_click(self, event):
         self.init_new_game()
         self.current_state = self.game
+
+    def on_solve_click(self, event):
+        print('Lets try solve this thing')
 
 
 class Game(object):
@@ -254,6 +258,7 @@ class Menu(object):
 
         # Create the buttons.
         self.new_button('New Game', 'on_new_click')
+        self.new_button('Solve', 'on_solve_click')
         self.new_button('Resume', 'on_resume_click')
 
         # Incrementally set the `y` coordinate of the buttons.
