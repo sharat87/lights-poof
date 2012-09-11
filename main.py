@@ -239,17 +239,18 @@ class Menu(object):
         self.title_rect.centerx = self.display.get_width() / 2
         self.title_rect.top = 18
 
-        self.button_gap = 12
         self.buttons = []
-
-        y = self.title_rect.top + self.title_rect.height + 24
 
         self.resume_btn = Button('Resume', centerx=self.display.get_width() / 2)
         self.resume_btn.on_click = (lambda event:
                 self.on_resume_click and self.on_resume_click(event))
         self.buttons.append(self.resume_btn)
 
-        self.resume_btn.update_rect(y=y)
+        y = self.title_rect.top + self.title_rect.height + 24
+        button_gap = 12
+        for button in self.buttons:
+            button.update_rect(y=y)
+            y += button_gap
 
     def draw(self):
         # Draw the title.
