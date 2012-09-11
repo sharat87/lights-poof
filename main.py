@@ -122,8 +122,10 @@ class Game(object):
         self.board_x = (self.display.get_width() - self.board_size) / 2
         self.board_y = (self.display.get_height() - self.board_size) / 2
 
-        self.board = [[False] * self.game_size for _ in range(self.game_size)]
+        self.board = [[Light(self.display) for _ in range(self.game_size)]
+                for _ in range(self.game_size)]
         self.apply_level(level)
+        self.update_light_positions()
 
         self.menu_btn = Button('Menu', centerx=self.display.get_width() / 2,
                 y=self.board_y + self.board_size + 24)
@@ -157,18 +159,9 @@ class Game(object):
         self.display.blit(self.title_surface, self.title_rect)
 
         # Draw the lights.
-        y = self.board_y
-        for i, row in enumerate(self.board):
-            x = self.board_x
-
-            for j, status in enumerate(row):
-
-                image = self.on_image if status else self.off_image
-                self.display.blit(image, (x, y))
-
-                x += self.light_size + self.light_gap
-
-            y += self.light_size + self.light_gap
+        for row in self.board:
+            for light in row:
+                light.draw()
 
         # Draw the buttons.
         self.menu_btn.draw(self.display)
@@ -181,6 +174,18 @@ class Game(object):
         # Left click.
         if event.type == MOUSEBUTTONUP and event.button == 1:
             self.on_left_click(event)
+
+    def update_light_positions(self):
+
+        y = self.board_y
+        for i, row in enumerate(self.board):
+            x = self.board_x
+
+            for j, light in enumerate(row):
+                light.update_rect(x=x, y=y)
+                x += self.light_size + self.light_gap
+
+            y += self.light_size + self.light_gap
 
     def on_left_click(self, event):
 
@@ -242,7 +247,7 @@ class Game(object):
 
         # Toggle the light at this location.
         for i, j in toggle_positions:
-            self.board[i][j] = not self.board[i][j]
+            self.board[i][j].toggle()
 
     def _on_menu_click(self, event):
         if self.on_menu_click is not None:
@@ -260,6 +265,33 @@ class Solver(object):
 
     def handle(self, event):
         self.game.handle(event)
+
+
+class Light(object):
+
+    on_image = None
+    off_image = None
+
+    def __init__(self, display, value=False):
+        self.display = display
+        self.value = value
+
+        if Light.on_image is None:
+            Light.on_image = pygame.image.load('light-on.png')
+            Light.off_image = pygame.image.load('light-off.png')
+
+        self.rect = pygame.Rect((0, 0), Light.on_image.get_size())
+
+    def update_rect(self, **kwargs):
+        for name, value in kwargs.items():
+            setattr(self.rect, name, value)
+
+    def draw(self):
+        self.display.blit(Light.on_image if self.value else Light.off_image,
+                self.rect)
+
+    def toggle(self):
+        self.value = not self.value
 
 
 class Menu(object):
