@@ -19,6 +19,8 @@ class Game(object):
         self.on_image = pygame.image.load('light-on.png')
         self.off_image = pygame.image.load('light-off.png')
 
+        self.init_bg_surface()
+
         title_font = pygame.font.Font('Signika-Regular.ttf', 36)
         self.title_surface = title_font.render('Lights poof!', True,
                 (213, 85, 148))
@@ -42,6 +44,23 @@ class Game(object):
         self.menu_btn = Button('Menu', centerx=self.display.get_width() / 2,
                 y=self.board_y + self.board_size + 24)
         self.menu_btn.on_click = self.on_menu_click
+
+    def init_bg_surface(self):
+        bg_image = pygame.image.load('bg.png')
+        self.bg_surface = pygame.Surface(self.display.get_size())
+
+        x = y = 0
+        image_width, image_height = bg_image.get_size()
+        bg_width, bg_height = self.display.get_size()
+
+        while x < bg_width:
+            y = 0
+
+            while y < bg_height:
+                self.bg_surface.blit(bg_image, (x, y))
+                y += image_height
+
+            x += image_width
 
     def apply_level(self, level):
 
@@ -67,7 +86,7 @@ class Game(object):
 
     def draw(self):
         # Draw background.
-        self.display.fill((40, 40, 40))
+        self.display.blit(self.bg_surface, (0, 0))
 
         # Draw the title.
         self.display.blit(self.title_surface, self.title_rect)
