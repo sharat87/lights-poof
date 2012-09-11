@@ -19,8 +19,7 @@ class App(object):
 
         self.init_bg_surface()
 
-        self.game = Game(self.display)
-        self.game.on_menu_click = self.on_menu_click
+        self.init_new_game()
 
         self.menu = Menu(self.display)
         self.menu.on_resume_click = self.on_resume_click
@@ -74,6 +73,10 @@ class App(object):
 
             x += image_width
 
+    def init_new_game(self):
+        self.game = Game(self.display)
+        self.game.on_menu_click = self.on_menu_click
+
     def on_menu_click(self, event):
         self.current_state = self.menu
 
@@ -81,7 +84,8 @@ class App(object):
         self.current_state = self.game
 
     def on_new_click(self, event):
-        print('New game')
+        self.init_new_game()
+        self.current_state = self.game
 
 
 class Game(object):
