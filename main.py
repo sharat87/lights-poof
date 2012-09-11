@@ -41,7 +41,6 @@ class App(object):
             self.current_state.handle(event)
 
 
-
 class Game(object):
 
     def __init__(self, display, level=None):
@@ -262,5 +261,5 @@ class Button(object):
         return self.rect.collidepoint(point)
 
 
-app = App()
-app.main_loop()
+if __name__ == '__main__':
+    App().main_loop()
