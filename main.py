@@ -269,20 +269,31 @@ class Solver(object):
                 self.on_solver_done())
         self.on_solver_done = None
 
+        self.spot_stage = 'show'
+        self.last_spot_time = 0
+
     def draw(self):
 
-        if not self.spotlight or time.time() - self.last_spot_time > 1:
+        time_diff = time.time() - self.last_spot_time
+
+        if not self.spotlight or \
+                (self.spot_stage == 'show' and time_diff > 1) or \
+                (self.spot_stage == 'hide' and time_diff > .6):
+
             self.last_spot_time = time.time()
 
-            if self.spotlight:
+            if self.spotlight and self.spot_stage == 'show':
                 self.spotlight.in_spotlight = False
                 self.game.toggle(*self.spotlight_pos)
+                self.spot_stage = 'hide'
 
-            if self.game.solution:
+            elif self.game.solution:
                 i, j = self.spotlight_pos = self.game.solution.pop()
 
                 self.spotlight = self.game.board[i][j]
                 self.spotlight.in_spotlight = True
+
+                self.spot_stage = 'show'
 
             else:
                 self._on_solver_done()
