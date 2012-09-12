@@ -8,9 +8,9 @@ import sys
 import time
 import pygame
 from pygame.locals import QUIT, KEYUP
-from game import Game
-from menu import Menu
-from solver import Solver
+from game import GameState
+from menu import MenuState
+from solver import SolverState
 from light import Light
 from button import Button
 
@@ -24,12 +24,12 @@ class App(object):
 
         self.init_bg_surface()
 
-        self.solver = Solver(self.display)
+        self.solver = SolverState(self.display)
         self.solver.on_solver_done = self.on_solver_done
 
         self.init_new_game()
 
-        self.menu = Menu(self.display)
+        self.menu = MenuState(self.display)
         self.menu.on_resume_click = self.on_resume_click
         self.menu.on_new_click = self.on_new_click
         self.menu.on_restart_click = self.on_restart_click
@@ -85,7 +85,7 @@ class App(object):
             x += image_width
 
     def init_new_game(self):
-        self.game = Game(self.display)
+        self.game = GameState(self.display)
         self.game.on_menu_click = self.on_menu_click
 
         self.solver.game = self.game

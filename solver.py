@@ -7,7 +7,7 @@ from __future__ import print_function
 import pygame
 import time
 
-class Solver(object):
+class SolverState(object):
 
     def __init__(self, display):
         self.display = display

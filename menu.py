@@ -7,7 +7,7 @@ from __future__ import print_function
 import pygame
 from button import Button
 
-class Menu(object):
+class MenuState(object):
 
     def __init__(self, display):
         self.display = display

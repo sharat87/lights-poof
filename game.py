@@ -10,7 +10,7 @@ from pygame.locals import MOUSEBUTTONUP
 from light import Light
 from button import Button
 
-class Game(object):
+class GameState(object):
 
     def __init__(self, display, level=None):
 
