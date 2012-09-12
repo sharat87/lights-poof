@@ -64,7 +64,7 @@ class App(object):
             self.current_state.handle(event)
 
     def init_bg_surface(self):
-        bg_image = pygame.image.load('bg.png')
+        bg_image = pygame.image.load('img/bg.png')
         self.bg_surface = pygame.Surface(self.display.get_size())
 
         x = y = 0
@@ -384,9 +384,9 @@ class Light(object):
         self.value = value
 
         if Light.on_image is None:
-            Light.on_image = pygame.image.load('light-on.png')
-            Light.off_image = pygame.image.load('light-off.png')
-            Light.spotlight_image = pygame.image.load('light-spotlight.png')
+            Light.on_image = pygame.image.load('img/light-on.png')
+            Light.off_image = pygame.image.load('img/light-off.png')
+            Light.spotlight_image = pygame.image.load('img/light-spotlight.png')
 
         self.rect = pygame.Rect((0, 0), Light.on_image.get_size())
 
@@ -466,8 +466,8 @@ class Button(object):
 
         if Button.active_image is None:
             Button.label_font = pygame.font.Font('Signika-Light.ttf', 24)
-            Button.active_image = pygame.image.load('button-active.png')
-            Button.inactive_image = pygame.image.load('button-inactive.png')
+            Button.active_image = pygame.image.load('img/button-active.png')
+            Button.inactive_image = pygame.image.load('img/button-inactive.png')
 
         self.is_mousedown = False
         self.on_click = None
