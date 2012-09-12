@@ -126,6 +126,7 @@ class Game(object):
         self.light_gap = 6
 
         self.level = self.solution = None
+        self.is_game_over = False
 
         self.board_size = ((self.light_size + self.light_gap) * self.game_size
                 - self.light_gap)
@@ -230,6 +231,8 @@ class Game(object):
             except ValueError:
                 self.solution.append(light_pos)
 
+        self.check_game_over()
+
     def get_light_under_point(self, point):
         point_x, point_y = point
 
@@ -274,6 +277,17 @@ class Game(object):
         # Toggle the light at this location.
         for i, j in toggle_positions:
             self.board[i][j].toggle()
+
+    def check_game_over(self):
+
+        for row in self.board:
+            for light in row:
+                if light.value:
+                    self.is_game_over = False
+                    return
+
+        self.is_game_over = True
+        print('Game over')
 
     def restart(self):
         self.apply_level(self.level)
