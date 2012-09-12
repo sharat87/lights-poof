@@ -211,7 +211,17 @@ class GameOverState(object):
         self.game = game
 
         self.overlay_surface = self.display.convert_alpha()
-        self.overlay_surface.fill((0, 0, 0, 150))
+        self.overlay_surface.fill((0, 0, 0, 230))
+
+        question_font = pygame.font.Font('Signika-Regular.ttf', 40)
+        question_surface = question_font.render('Yay! You won!', True,
+                (213, 85, 148))
+
+        question_rect = question_surface.get_rect()
+        question_rect.centerx = self.display.get_width() / 2
+        question_rect.top = 64
+
+        self.overlay_surface.blit(question_surface, question_rect)
 
     def draw(self):
         self.game.draw()
