@@ -316,7 +316,8 @@ class Solver(object):
         self.game.draw()
 
     def handle(self, event):
-        self.game.handle(event)
+        # XXX: This is a hack. There should be a better way.
+        self.game.menu_btn.handle(event)
 
 
 class Light(object):
