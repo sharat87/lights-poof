@@ -28,6 +28,7 @@ class App(object):
         self.menu = Menu(self.display)
         self.menu.on_resume_click = self.on_resume_click
         self.menu.on_new_click = self.on_new_click
+        self.menu.on_restart_click = self.on_restart_click
         self.menu.on_solve_click = self.on_solve_click
 
         self.current_state = self.game
@@ -94,6 +95,10 @@ class App(object):
         self.init_new_game()
         self.current_state = self.game
 
+    def on_restart_click(self, event):
+        self.game.restart()
+        self.current_state = self.game
+
     def on_solve_click(self, event):
         self.current_state = self.solver
         print(self.solver.game.solution)
@@ -120,6 +125,8 @@ class Game(object):
         self.light_size = 42
         self.light_gap = 6
 
+        self.level = self.solution = None
+
         self.board_size = ((self.light_size + self.light_gap) * self.game_size
                 - self.light_gap)
 
@@ -140,22 +147,37 @@ class Game(object):
 
     def apply_level(self, level):
 
-        # How many turns should the game be of?
-        min_turns = self.game_size
-        max_turns = self.game_size * 2
-        turns = random.randint(min_turns, max_turns)
+        if level is None:
+            # How many turns should the game be of?
+            min_turns = self.game_size
+            max_turns = self.game_size * 2
+            turns = random.randint(min_turns, max_turns)
 
-        # Create a list of all possible coordinates and select `turns` of them
-        # in random.
-        all_coordinates = [(i, j) for i in range(self.game_size)
-                for j in range(self.game_size)]
-        random.shuffle(all_coordinates)
+            # Create a list of all possible coordinates and select `turns` of
+            # them in random.
+            all_coordinates = [(i, j) for i in range(self.game_size)
+                    for j in range(self.game_size)]
+            random.shuffle(all_coordinates)
 
-        # They are also the solution of this game.
-        self.solution = all_coordinates[:turns]
+            # Here's the level. Toggling these coordinates will give us the
+            # level just generated.
+            self.level = all_coordinates[:turns]
+
+            # They are also the solution of this game. Keeping it separate as
+            # the level representation might change in the future.
+            self.solution = all_coordinates[:turns]
+
+        else:
+            self.level = level
+            self.solution = list(level)
+
+        # Empty the board first.
+        for row in self.board:
+            for light in row:
+                light.value = False
 
         # Toggle each of the selected coordinate.
-        for i, j in self.solution:
+        for i, j in self.level:
             self.toggle(i, j)
 
     def draw(self):
@@ -252,6 +274,9 @@ class Game(object):
         # Toggle the light at this location.
         for i, j in toggle_positions:
             self.board[i][j].toggle()
+
+    def restart(self):
+        self.apply_level(self.level)
 
     def _on_menu_click(self, event):
         if self.on_menu_click is not None:
@@ -373,6 +398,7 @@ class Menu(object):
 
         # Create the buttons.
         self.new_button('New Game', 'on_new_click')
+        self.new_button('Restart', 'on_restart_click')
         self.new_button('Solve', 'on_solve_click')
         self.new_button('Resume', 'on_resume_click')
 
