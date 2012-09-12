@@ -31,7 +31,8 @@ class App(object):
         self.menu.on_restart_click = self.on_restart_click
         self.menu.on_solve_click = self.on_solve_click
 
-        self.current_state = self.game
+        self.current_state = None
+        self.set_state(self.game)
 
     def main_loop(self):
 
@@ -87,6 +88,7 @@ class App(object):
 
     def set_state(self, state):
         old_state = self.current_state
+        self.current_state = state
 
         if hasattr(old_state, 'deactivated'):
             old_state.deactivated()
@@ -95,26 +97,26 @@ class App(object):
             self.current_state.activated()
 
     def on_menu_click(self, event):
-        self.current_state = self.menu
+        self.set_state(self.menu)
 
     def on_resume_click(self, event):
-        self.current_state = self.game
+        self.set_state(self.game)
 
     def on_new_click(self, event):
         self.init_new_game()
-        self.current_state = self.game
+        self.set_state(self.game)
 
     def on_restart_click(self, event):
         self.game.restart()
-        self.current_state = self.game
+        self.set_state(self.game)
 
     def on_solve_click(self, event):
-        self.current_state = self.solver
+        self.set_state(self.solver)
         print(self.solver.game.solution)
 
     def on_solver_done(self):
         print('Solving complete')
-        self.current_state = self.game
+        self.set_state(self.game)
 
 
 class Game(object):
@@ -366,6 +368,10 @@ class Solver(object):
     def handle(self, event):
         # XXX: This is a hack. There should be a better way.
         self.game.menu_btn.handle(event)
+
+    def deactivated(self):
+        self.spotlight.in_spotlight = False
+        self.spot_stage = 'show'
 
 
 class Light(object):
