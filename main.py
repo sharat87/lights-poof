@@ -85,6 +85,15 @@ class App(object):
 
         self.solver.game = self.game
 
+    def set_state(self, state):
+        old_state = self.current_state
+
+        if hasattr(old_state, 'deactivated'):
+            old_state.deactivated()
+
+        if hasattr(self.current_state, 'activated'):
+            self.current_state.activated()
+
     def on_menu_click(self, event):
         self.current_state = self.menu
 
