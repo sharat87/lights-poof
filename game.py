@@ -48,6 +48,9 @@ class GameState(object):
         self.menu_btn.on_click = self._on_menu_click
         self.on_menu_click = None
 
+        # Handler for when the game is over.
+        self.on_game_over = None
+
     def apply_level(self, level):
 
         if level is None:
@@ -189,7 +192,9 @@ class GameState(object):
                     return
 
         self.is_game_over = True
-        print('Game over')
+
+        if self.on_game_over is not None:
+            self.on_game_over()
 
     def restart(self):
         self.apply_level(self.level)
@@ -197,3 +202,20 @@ class GameState(object):
     def _on_menu_click(self, event):
         if self.on_menu_click is not None:
             self.on_menu_click(event)
+
+
+class GameOverState(object):
+
+    def __init__(self, display, game=None):
+        self.display = display
+        self.game = game
+
+        self.overlay_surface = self.display.convert_alpha()
+        self.overlay_surface.fill((0, 0, 0, 150))
+
+    def draw(self):
+        self.game.draw()
+        self.display.blit(self.overlay_surface, (0, 0))
+
+    def handle(self, event):
+        pass

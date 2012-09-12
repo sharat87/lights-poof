@@ -9,10 +9,13 @@ import time
 import pygame
 from pygame.locals import QUIT, KEYUP
 from game import GameState
+from game import GameOverState
 from menu import MenuState
 from solver import SolverState
 from light import Light
 from button import Button
+
+# TODO: Create a better Event system.
 
 class App(object):
 
@@ -26,6 +29,8 @@ class App(object):
 
         self.solver = SolverState(self.display)
         self.solver.on_solver_done = self.on_solver_done
+
+        self.game_over_state = GameOverState(self.display)
 
         self.init_new_game()
 
@@ -87,8 +92,11 @@ class App(object):
     def init_new_game(self):
         self.game = GameState(self.display)
         self.game.on_menu_click = self.on_menu_click
+        self.game.on_game_over = self.on_game_over
 
         self.solver.game = self.game
+
+        self.game_over_state.game = self.game
 
     def set_state(self, state):
         old_state = self.current_state
@@ -102,6 +110,9 @@ class App(object):
 
     def on_menu_click(self, event):
         self.set_state(self.menu)
+
+    def on_game_over(self):
+        self.set_state(self.game_over_state)
 
     def on_resume_click(self, event):
         self.set_state(self.game)
