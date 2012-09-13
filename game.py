@@ -47,7 +47,7 @@ class GameState(object):
                 y=self.board_y + self.board_size + 24)
 
         # Menu button click handler should be set from outside this class.
-        self.menu_btn.on_click = self._on_menu_click
+        self.menu_btn.listen('click', self._on_menu_click)
         self.on_menu_click = None
 
         # Handler for when the game is over.
@@ -201,9 +201,9 @@ class GameState(object):
     def restart(self):
         self.apply_level(self.level)
 
-    def _on_menu_click(self, event):
+    def _on_menu_click(self):
         if self.on_menu_click is not None:
-            self.on_menu_click(event)
+            self.on_menu_click()
 
 
 class GameOverState(object):

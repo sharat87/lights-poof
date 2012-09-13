@@ -103,5 +103,5 @@ class MenuButtonBar(object):
         self.buttons.append(button)
 
         if handler_name:
-            button.on_click = (lambda event:
-                    getattr(self.handler, handler_name)(event))
+            button.listen('click', lambda:
+                    getattr(self.handler, handler_name)())

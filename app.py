@@ -109,24 +109,24 @@ class App(object):
         if hasattr(self.current_state, 'activated'):
             self.current_state.activated()
 
-    def on_menu_click(self, event):
+    def on_menu_click(self):
         self.set_state(self.menu)
 
     def on_game_over(self):
         self.set_state(self.game_over_state)
 
-    def on_resume_click(self, event):
+    def on_resume_click(self):
         self.set_state(self.game)
 
-    def on_new_click(self, event):
+    def on_new_click(self):
         self.init_new_game()
         self.set_state(self.game)
 
-    def on_restart_click(self, event):
+    def on_restart_click(self):
         self.game.restart()
         self.set_state(self.game)
 
-    def on_solve_click(self, event):
+    def on_solve_click(self):
         self.set_state(self.solver)
         print(self.solver.game.solution)
 

@@ -6,8 +6,9 @@ from __future__ import print_function
 
 import pygame
 from pygame.locals import MOUSEBUTTONUP, MOUSEBUTTONDOWN
+from events import EventSystem
 
-class Button(object):
+class Button(EventSystem):
 
     active_image = None
     inactive_image = None
@@ -21,7 +22,6 @@ class Button(object):
 
         self.display = display
         self.is_mousedown = False
-        self.on_click = None
 
         self.label = label
         self.label_surface = Button.label_font.render(self.label, True,
@@ -48,8 +48,6 @@ class Button(object):
         self.display.blit(self.label_surface, self.label_rect)
 
     def handle(self, event):
-        if self.on_click is None:
-            return
 
         if event.type == MOUSEBUTTONDOWN and self.contains(event.pos):
             self.is_mousedown = True
@@ -57,7 +55,7 @@ class Button(object):
         elif event.type == MOUSEBUTTONUP:
 
             if self.is_mousedown and self.contains(event.pos):
-                self.on_click(event)
+                self.emit('click')
 
             self.is_mousedown = False
 
