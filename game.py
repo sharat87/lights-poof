@@ -9,6 +9,7 @@ import pygame
 from pygame.locals import MOUSEBUTTONUP
 from light import Light
 from button import Button
+from menu import MenuButtonBar
 
 class GameState(object):
 
@@ -214,19 +215,23 @@ class GameOverState(object):
         self.overlay_surface = self.display.convert_alpha()
         self.overlay_surface.fill((0, 0, 0, 230))
 
-        question_font = pygame.font.Font('Signika-Regular.ttf', 40)
-        question_surface = question_font.render('Yay! You won!', True,
+        title_font = pygame.font.Font('Signika-Regular.ttf', 40)
+        title_surface = title_font.render('Yay! You won!', True,
                 (213, 85, 148))
 
-        question_rect = question_surface.get_rect()
-        question_rect.centerx = self.display.get_width() / 2
-        question_rect.top = 64
+        title_rect = title_surface.get_rect()
+        title_rect.centerx = self.display.get_width() / 2
+        title_rect.top = 64
 
-        self.overlay_surface.blit(question_surface, question_rect)
+        self.overlay_surface.blit(title_surface, title_rect)
+
+        self.menu_bar = MenuButtonBar(self.overlay_surface)
+        self.menu_bar.update_rect(y=title_rect.top + title_rect.height + 18)
 
     def draw(self):
         self.game.draw()
         self.display.blit(self.overlay_surface, (0, 0))
+        self.menu_bar.draw()
 
     def handle(self, event):
         pass
