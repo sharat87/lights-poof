@@ -4,7 +4,6 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
-import pygame
 import time
 
 class SolverState(object):

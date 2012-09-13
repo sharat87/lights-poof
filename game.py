@@ -41,7 +41,8 @@ class GameState(object):
         self.apply_level(level)
         self.update_light_positions()
 
-        self.menu_btn = Button('Menu', centerx=self.display.get_width() / 2,
+        self.menu_btn = Button(self.display, 'Menu',
+                centerx=self.display.get_width() / 2,
                 y=self.board_y + self.board_size + 24)
 
         # Menu button click handler should be set from outside this class.
@@ -96,7 +97,7 @@ class GameState(object):
                 light.draw()
 
         # Draw the buttons.
-        self.menu_btn.draw(self.display)
+        self.menu_btn.draw()
 
     def handle(self, event):
 

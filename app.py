@@ -12,8 +12,6 @@ from game import GameState
 from game import GameOverState
 from menu import MenuState
 from solver import SolverState
-from light import Light
-from button import Button
 
 # TODO: Create a better Event system.
 
