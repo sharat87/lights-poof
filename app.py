@@ -17,7 +17,9 @@ from solver import SolverState
 
 class App(object):
 
-    def __init__(self):
+    def __init__(self, dev=False):
+        self.dev = dev
+
         pygame.init()
 
         self.display = pygame.display.set_mode((320, 420))
@@ -88,7 +90,8 @@ class App(object):
             x += image_width
 
     def init_new_game(self):
-        self.game = GameState(self.display)
+        self.game = GameState(self.display,
+                level=([(2, 2)] if self.dev else None))
         self.game.on_menu_click = self.on_menu_click
         self.game.on_game_over = self.on_game_over
 
