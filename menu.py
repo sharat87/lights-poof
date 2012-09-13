@@ -22,19 +22,19 @@ class MenuState(object):
         self.title_rect.centerx = self.display.get_width() / 2
         self.title_rect.top = 18
 
-        self.button_bar = MenuButtonBar(self.display)
-        self.button_bar.update_rect(y=self.title_rect.top +
+        self.menu_bar = MenuButtonBar(self.display)
+        self.menu_bar.update_rect(y=self.title_rect.top +
                 self.title_rect.height + 24)
-        self.button_bar.handler = self
+        self.menu_bar.handler = self
 
     def draw(self):
         # Draw the title.
         self.display.blit(self.title_surface, self.title_rect)
 
-        self.button_bar.draw()
+        self.menu_bar.draw()
 
     def handle(self, event):
-        self.button_bar.handle(event)
+        self.menu_bar.handle(event)
 
 
 class MenuButtonBar(object):
