@@ -11,7 +11,9 @@ class EventSystem(object):
     def init(self):
         # So that the subclasses don't have to call this class's __init__
         # method.
-        if not hasattr(self, 'handlers'):
+        try:
+            self.handlers
+        except AttributeError:
             self.handlers = defaultdict(list)
 
     def emit(self, event_name):
