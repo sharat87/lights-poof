@@ -5,18 +5,14 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import time
+from events import EventSystem
 
-class SolverState(object):
+class SolverState(EventSystem):
 
     def __init__(self, display):
         self.display = display
         self.spotlight = None
         self.spotlight_pos = 0, 0
-
-        # Solving done event kinda thingy.
-        self._on_solver_done = (lambda: self.on_solver_done and
-                self.on_solver_done())
-        self.on_solver_done = None
 
         # Specified what stage we are in, in solving. Can take following values.
         #   show - A spotlight is being shown.
@@ -59,7 +55,7 @@ class SolverState(object):
 
             else:
                 # Solution is empty. Finished.
-                self._on_solver_done()
+                self.emit('done-solving')
 
         self.game.draw()
 

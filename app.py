@@ -28,7 +28,7 @@ class App(object):
         self.init_bg_surface()
 
         self.solver = SolverState(self.display)
-        self.solver.on_solver_done = self.on_solver_done
+        self.solver.listen('done-solving', self.on_solver_done)
 
         self.game_over_state = GameOverState(self.display)
         self.game_over_state.listen('resume-click', self.on_resume_click)
@@ -96,8 +96,8 @@ class App(object):
     def init_new_game(self):
         self.game = GameState(self.display,
                 level=([(2, 2)] if self.dev else None))
-        self.game.on_menu_click = self.on_menu_click
-        self.game.on_game_over = self.on_game_over
+        self.game.listen('menu-click', self.on_menu_click)
+        self.game.listen('game-over', self.on_game_over)
 
         self.solver.game = self.game
 
@@ -113,10 +113,10 @@ class App(object):
         if hasattr(self.current_state, 'activated'):
             self.current_state.activated()
 
-    def on_menu_click(self):
+    def on_menu_click(self, event):
         self.set_state(self.menu)
 
-    def on_game_over(self):
+    def on_game_over(self, event):
         self.set_state(self.game_over_state)
 
     def on_resume_click(self, event):
@@ -134,6 +134,6 @@ class App(object):
         self.set_state(self.solver)
         print(self.solver.game.solution)
 
-    def on_solver_done(self):
+    def on_solver_done(self, event):
         print('Solving complete')
         self.set_state(self.game)

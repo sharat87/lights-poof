@@ -12,7 +12,7 @@ from button import Button
 from menu import MenuButtonBar
 from events import EventSystem
 
-class GameState(object):
+class GameState(EventSystem):
 
     def __init__(self, display, level=None):
 
@@ -48,11 +48,8 @@ class GameState(object):
                 y=self.board_y + self.board_size + 24)
 
         # Menu button click handler should be set from outside this class.
-        self.menu_btn.listen('click', self._on_menu_click)
-        self.on_menu_click = None
-
-        # Handler for when the game is over.
-        self.on_game_over = None
+        self.menu_btn.listen('click',
+                lambda event: self.emit('menu-click', **event.props))
 
     def apply_level(self, level):
 
@@ -195,16 +192,10 @@ class GameState(object):
                     return
 
         self.is_game_over = True
-
-        if self.on_game_over is not None:
-            self.on_game_over()
+        self.emit('game-over')
 
     def restart(self):
         self.apply_level(self.level)
-
-    def _on_menu_click(self, event):
-        if self.on_menu_click is not None:
-            self.on_menu_click()
 
 
 class GameOverState(EventSystem):
