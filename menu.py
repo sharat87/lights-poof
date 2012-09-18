@@ -5,10 +5,11 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import pygame
-from button import Button
 from pygame.locals import MOUSEBUTTONUP, MOUSEBUTTONDOWN
+from button import Button
+from events import EventSystem
 
-class MenuState(object):
+class MenuState(EventSystem):
 
     def __init__(self, display):
         self.display = display
@@ -25,6 +26,7 @@ class MenuState(object):
         self.menu_bar = MenuButtonBar(self.display)
         self.menu_bar.update_rect(y=self.title_rect.top +
                 self.title_rect.height + 24)
+        self.menu_bar.listen('*', self.on_menu_event)
         self.menu_bar.handler = self
 
     def draw(self):
@@ -36,8 +38,11 @@ class MenuState(object):
     def handle(self, event):
         self.menu_bar.handle(event)
 
+    def on_menu_event(self, event):
+        self.emit(event)
 
-class MenuButtonBar(object):
+
+class MenuButtonBar(EventSystem):
 
     def __init__(self, display):
 
@@ -49,10 +54,10 @@ class MenuButtonBar(object):
         self.buttons = []
 
         # Create the buttons.
-        self.new_button('New Game', 'on_new_click')
-        self.new_button('Restart', 'on_restart_click')
-        self.new_button('Solve', 'on_solve_click')
-        self.new_button('Resume', 'on_resume_click')
+        self.new_button('New Game', 'new-click')
+        self.new_button('Restart', 'restart-click')
+        self.new_button('Solve', 'solve-click')
+        self.new_button('Resume', 'resume-click')
 
         # Incrementally set the `y` coordinate of the buttons.
         y = 0
@@ -97,11 +102,11 @@ class MenuButtonBar(object):
 
         self.render()
 
-    def new_button(self, label, handler_name=None):
+    def new_button(self, label, event_name):
         button = Button(self.surface, label,
                 centerx=self.display.get_width() / 2)
-        self.buttons.append(button)
 
-        if handler_name:
-            button.listen('click', lambda:
-                    getattr(self.handler, handler_name)())
+        button.listen('click',
+                lambda event: self.emit(event_name, **event.props))
+
+        self.buttons.append(button)

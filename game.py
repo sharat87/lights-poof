@@ -10,6 +10,7 @@ from pygame.locals import MOUSEBUTTONUP
 from light import Light
 from button import Button
 from menu import MenuButtonBar
+from events import EventSystem
 
 class GameState(object):
 
@@ -201,12 +202,12 @@ class GameState(object):
     def restart(self):
         self.apply_level(self.level)
 
-    def _on_menu_click(self):
+    def _on_menu_click(self, event):
         if self.on_menu_click is not None:
             self.on_menu_click()
 
 
-class GameOverState(object):
+class GameOverState(EventSystem):
 
     def __init__(self, display, game=None):
         self.display = display
@@ -227,6 +228,7 @@ class GameOverState(object):
 
         self.menu_bar = MenuButtonBar(self.overlay_surface)
         self.menu_bar.update_rect(y=title_rect.top + title_rect.height + 18)
+        self.menu_bar.listen('*', self.on_menu_event)
 
     def draw(self):
         self.game.draw()
@@ -234,4 +236,7 @@ class GameOverState(object):
         self.menu_bar.draw()
 
     def handle(self, event):
-        pass
+        self.menu_bar.handle(event)
+
+    def on_menu_event(self, event):
+        self.emit(event)

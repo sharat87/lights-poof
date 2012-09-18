@@ -31,14 +31,18 @@ class App(object):
         self.solver.on_solver_done = self.on_solver_done
 
         self.game_over_state = GameOverState(self.display)
+        self.game_over_state.listen('resume-click', self.on_resume_click)
+        self.game_over_state.listen('new-click', self.on_new_click)
+        self.game_over_state.listen('restart-click', self.on_restart_click)
+        self.game_over_state.listen('solve-click', self.on_solve_click)
 
         self.init_new_game()
 
         self.menu = MenuState(self.display)
-        self.menu.on_resume_click = self.on_resume_click
-        self.menu.on_new_click = self.on_new_click
-        self.menu.on_restart_click = self.on_restart_click
-        self.menu.on_solve_click = self.on_solve_click
+        self.menu.listen('resume-click', self.on_resume_click)
+        self.menu.listen('new-click', self.on_new_click)
+        self.menu.listen('restart-click', self.on_restart_click)
+        self.menu.listen('solve-click', self.on_solve_click)
 
         self.current_state = None
         self.set_state(self.game)
@@ -115,18 +119,18 @@ class App(object):
     def on_game_over(self):
         self.set_state(self.game_over_state)
 
-    def on_resume_click(self):
+    def on_resume_click(self, event):
         self.set_state(self.game)
 
-    def on_new_click(self):
+    def on_new_click(self, event):
         self.init_new_game()
         self.set_state(self.game)
 
-    def on_restart_click(self):
+    def on_restart_click(self, event):
         self.game.restart()
         self.set_state(self.game)
 
-    def on_solve_click(self):
+    def on_solve_click(self, event):
         self.set_state(self.solver)
         print(self.solver.game.solution)
 
