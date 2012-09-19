@@ -38,3 +38,12 @@ class Light(object):
 
     def toggle(self):
         self.value = not self.value
+
+    def __deepcopy__(self, memo):
+        # Deep copying the surface doesn't make sense and doesn't work out
+        # either.
+        clone = Light(self.display, self.value)
+
+        clone.update_rect(x=self.rect.x, y=self.rect.y)
+
+        return clone

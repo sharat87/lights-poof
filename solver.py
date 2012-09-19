@@ -5,12 +5,16 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import time
+import copy
 from events import EventSystem
 
 class SolverState(EventSystem):
 
     def __init__(self, display):
         self.display = display
+
+        self.game = None
+
         self.spotlight = None
         self.spotlight_pos = 0, 0
 
@@ -22,6 +26,8 @@ class SolverState(EventSystem):
         # The last time at which spot stage changed. Helps with delays between
         # stage changes.
         self.last_spot_time = 0
+
+        self._board = self._solution = None
 
     def draw(self):
 
@@ -63,6 +69,18 @@ class SolverState(EventSystem):
         # XXX: This is a hack. There should be a better way.
         self.game.menu_btn.handle(event)
 
+    def activated(self):
+        # These values will be used to restore the `self.game` to its state
+        # before the solver bagan.
+        self._board = copy.deepcopy(self.game.board)
+        self._solution = copy.deepcopy(self.game.solution)
+
     def deactivated(self):
+
+        self.game.board = self._board
+        self.game.solution = self._solution
+
+        self._board = self._solution = None
+
         self.spotlight.in_spotlight = False
         self.spot_stage = 'show'
