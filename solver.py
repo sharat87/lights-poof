@@ -74,13 +74,16 @@ class SolverState(EventSystem):
         # before the solver bagan.
         self._board = copy.deepcopy(self.game.board)
         self._solution = copy.deepcopy(self.game.solution)
+        self._level = copy.deepcopy(self.game.level)
 
     def deactivated(self):
 
         self.game.board = self._board
         self.game.solution = self._solution
+        self.game.level = self._level
 
-        self._board = self._solution = None
+        self._board = self._solution = self._level = None
 
         self.spotlight.in_spotlight = False
+        self.spotlight = None
         self.spot_stage = 'show'

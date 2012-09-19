@@ -197,6 +197,12 @@ class GameState(EventSystem):
     def restart(self):
         self.apply_level(self.level)
 
+    def print_board(self):
+        for row in self.board:
+            for light in row:
+                print('⁕' if light.value else '•', end=' ')
+            print()
+
 
 class GameOverState(EventSystem):
 

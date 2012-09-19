@@ -132,8 +132,6 @@ class App(object):
 
     def on_solve_click(self, event):
         self.set_state(self.solver)
-        print(self.solver.game.solution)
 
     def on_solver_done(self, event):
-        print('Solving complete')
         self.set_state(self.game)
