@@ -44,7 +44,7 @@ class MenuState(EventSystem):
 
 class MenuButtonBar(EventSystem):
 
-    def __init__(self, display):
+    def __init__(self, display, solve_button=True, resume_button=True):
 
         self.display = display
         self.surface = self.display.convert_alpha()
@@ -56,8 +56,12 @@ class MenuButtonBar(EventSystem):
         # Create the buttons.
         self.new_button('New Game', 'new-click')
         self.new_button('Restart', 'restart-click')
-        self.new_button('Solve', 'solve-click')
-        self.new_button('Resume', 'resume-click')
+
+        if solve_button:
+            self.new_button('Solve', 'solve-click')
+
+        if resume_button:
+            self.new_button('Resume', 'resume-click')
 
         # Incrementally set the `y` coordinate of the buttons.
         y = 0

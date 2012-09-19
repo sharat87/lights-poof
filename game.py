@@ -217,7 +217,8 @@ class GameOverState(EventSystem):
 
         self.overlay_surface.blit(title_surface, title_rect)
 
-        self.menu_bar = MenuButtonBar(self.overlay_surface)
+        self.menu_bar = MenuButtonBar(self.overlay_surface, solve_button=False,
+                resume_button=False)
         self.menu_bar.update_rect(y=title_rect.top + title_rect.height + 18)
         self.menu_bar.listen('*', self.on_menu_event)
 

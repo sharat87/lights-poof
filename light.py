@@ -47,3 +47,8 @@ class Light(object):
         clone.update_rect(x=self.rect.x, y=self.rect.y)
 
         return clone
+
+    def __unicode__(self):
+        return '<Light ' + ('on' if self.value else 'off') + '>'
+
+    __str__ = __repr__ = __unicode__
